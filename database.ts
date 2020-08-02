@@ -17,6 +17,7 @@ export class User extends Model {
     email: DataTypes.STRING,
     avatar: DataTypes.STRING,
     karma: DataTypes.INTEGER,
+    password: DataTypes.STRING,
   };
 
   static subreddits() {
