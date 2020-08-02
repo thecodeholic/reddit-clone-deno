@@ -7,4 +7,5 @@ export {
   DataTypes,
   Database,
   Model,
+  Relationships,
 } from "https://deno.land/x/denodb@v1.0.4/mod.ts";
