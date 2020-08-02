@@ -1,11 +1,15 @@
-import {RouterContext} from '../deps.ts';
+import { RouterContext } from "../deps.ts";
 
 class AuthController {
   async register(ctx: RouterContext) {
-    ctx.response.body = 'Register';
+    const body = await ctx.request.body();
+    const data = await body.value;
+    console.log(data);
+
+    ctx.response.body = "Register";
   }
   async login(ctx: RouterContext) {
-    ctx.response.body = 'Login';
+    ctx.response.body = "Login";
   }
 }
 
