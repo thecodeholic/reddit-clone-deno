@@ -1,7 +1,8 @@
 import {
   Application,
 } from "./deps.ts";
-import router from './router.ts';
+import router from "./router.ts";
+import "./database.ts";
 
 const app = new Application();
 
