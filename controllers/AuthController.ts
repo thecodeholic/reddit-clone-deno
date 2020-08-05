@@ -1,5 +1,5 @@
 import { RouterContext, QueryResult, hashSync, compareSync } from "../deps.ts";
-import dbClient from "../database.ts";
+import dbClient, { queryOne } from "../database.ts";
 import User from "../models/User.ts";
 
 class AuthController {
@@ -54,35 +54,28 @@ class AuthController {
     const data = await body.value;
 
     // Select user by username
-    const result: QueryResult = await dbClient.query(
+    const user = await queryOne(
       "SELECT * FROM users WHERE username = $1",
       data.username,
     );
 
-    if (result.rows.length === 0) {
+    if (!user) {
       ctx.response.status = 422;
       ctx.response.body = {
         message: "User does not exist with this username",
       };
       return;
     }
-    console.log(result);
+    console.log(user);
 
-    const rows: any[] = [];
-    result.rows.forEach((row) => {
-      const obj: any = {};
-      row.forEach((value: any, ind: number) => {
-        obj[result.rowDescription.columns[ind].name] = value;
-      });
-      rows.push(obj);
-    });
-    console.log(rows);
-
-    // const users = result.rows.map((row, ind) => {
-    //   return row.reduce((obj, value) => , {})
-    // })
-
-    let user = result.rows[0];
+    // const rows: any[] = [];
+    // result.rows.forEach((row) => {
+    //   const obj: any = {};
+    //   row.forEach((value: any, ind: number) => {
+    //     obj[result.rowDescription.columns[ind].name] = value;
+    //   });
+    //   rows.push(obj);
+    // });
 
     ctx.response.body = "Login";
   }
