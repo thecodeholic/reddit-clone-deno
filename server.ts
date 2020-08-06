@@ -3,7 +3,6 @@ import {
 } from "./deps.ts";
 import router from "./router.ts";
 import "./database.ts";
-import dbClient from "./database.ts";
 
 const app = new Application();
 

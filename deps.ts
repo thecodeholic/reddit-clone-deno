@@ -1,6 +1,7 @@
 export {
   Application,
   Router,
+  Context,
   RouterContext,
 } from "https://deno.land/x/oak@v6.0.1/mod.ts";
 export { connect } from "https://deno.land/x/cotton@v0.6.3/mod.ts";
@@ -22,3 +23,6 @@ export {
   Jose,
   Payload,
 } from "https://deno.land/x/djwt@v1.2/create.ts";
+export {
+  validateJwt,
+} from "https://deno.land/x/djwt@v1.2/validate.ts";
