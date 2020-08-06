@@ -16,3 +16,9 @@ export {
   hashSync,
   compareSync,
 } from "https://deno.land/x/bcrypt@v0.2.4/mod.ts";
+export {
+  makeJwt,
+  setExpiration,
+  Jose,
+  Payload,
+} from "https://deno.land/x/djwt@v1.2/create.ts";

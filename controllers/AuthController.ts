@@ -1,6 +1,21 @@
-import { RouterContext, QueryResult, hashSync, compareSync } from "../deps.ts";
+import {
+  RouterContext,
+  QueryResult,
+  hashSync,
+  compareSync,
+  makeJwt,
+  Jose,
+  setExpiration,
+  Payload,
+} from "../deps.ts";
 import dbClient, { queryOne } from "../database.ts";
 import User from "../models/User.ts";
+import CONFIG from "../config.ts";
+
+const header: Jose = {
+  alg: "HS256",
+  typ: "JWT",
+};
 
 class AuthController {
   async register(ctx: RouterContext) {
@@ -49,6 +64,7 @@ class AuthController {
       ctx.response.body = "Internal server error";
     }
   }
+
   async login(ctx: RouterContext) {
     const body = await ctx.request.body();
     const data = await body.value;
@@ -66,8 +82,24 @@ class AuthController {
       };
       return;
     }
-    console.log(user);
+    if (!compareSync(data.password, user.password)) {
+      ctx.response.status = 422;
+      ctx.response.body = {
+        message: "Incorrect password",
+      };
+      return;
+    }
+    console.log("Create JWT and return");
 
+    const payload: Payload = {
+      iss: user.username,
+      exp: setExpiration(60),
+    };
+    delete user.password;
+    ctx.response.body = {
+      ...user,
+      jwt: await makeJwt({ header, payload: payload, key: CONFIG.JWT_KEY }),
+    };
     // const rows: any[] = [];
     // result.rows.forEach((row) => {
     //   const obj: any = {};
@@ -76,8 +108,6 @@ class AuthController {
     //   });
     //   rows.push(obj);
     // });
-
-    ctx.response.body = "Login";
   }
 }
 
