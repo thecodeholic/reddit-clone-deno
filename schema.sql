@@ -147,7 +147,7 @@ CREATE TABLE public.subreddits_users (
     user_id bigint NOT NULL,
     subreddit_id bigint NOT NULL,
     karma integer NOT NULL,
-    created_date timestamp without time zone
+    create_date timestamp without time zone
 );
 
 
