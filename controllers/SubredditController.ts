@@ -1,5 +1,6 @@
-import dbClient from "../database.ts";
+import dbClient, { queryOne } from "../database.ts";
 import { RouterContext } from "../deps.ts";
+import { QueryResult } from "../deps.ts";
 
 export class SubredditController {
   async create(ctx: RouterContext) {
@@ -7,14 +8,31 @@ export class SubredditController {
     const data = await body.value;
     const user = ctx.state.user;
 
-    dbClient.query(
-      `INSERT INTO subreddits (name, user_id, create_date) 
-        VALUES ($1, $2, $3)`,
-      data.name,
-      user.id,
-      new Date(),
-    );
-    //TODO
+    try {
+      const subreddit = await queryOne(
+        `INSERT INTO subreddits (name, user_id, create_date) 
+          VALUES ($1, $2, $3) RETURNING *`,
+          data.name,
+          user.id,
+          new Date()
+      );
+      const subredditUser: QueryResult = await queryOne(
+        `INSERT INTO subreddits_users (user_id, subreddit_id, create_date) 
+          VALUES ($1, $2, $3) RETURNING *`,
+          user.id,
+          subreddit.id,
+          new Date()
+      );
+      
+      console.log(subreddit);
+      ctx.response.status = 201;
+      ctx.response.body = subreddit;
+      return;
+    } catch(e) {
+      console.log(e);
+      ctx.response.status =500;
+      ctx.response.body = {message: "Internal server error"}
+    }
   }
 }
 

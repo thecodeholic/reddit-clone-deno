@@ -93,7 +93,7 @@ class AuthController {
 
     const payload: Payload = {
       iss: user.username,
-      exp: setExpiration(60),
+      exp: setExpiration(60 * 60),
     };
     delete user.password;
     ctx.response.body = {
