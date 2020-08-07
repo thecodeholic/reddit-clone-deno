@@ -12,10 +12,10 @@ router.get("/", (ctx: RouterContext) => {
 router
   .post("/register", authController.register)
   .post("/login", authController.login)
-  .post("/subreddit", authMiddleware, subredditController.create)
-  .put("/subreddit/:id", authMiddleware, subredditController.update)
-  .delete("/subreddit/:id", authMiddleware, subredditController.delete)
-  .get("/subreddit", authMiddleware, subredditController.index)
-  .get("/subreddit/:id", authMiddleware, subredditController.view);
+  .post("/subreddit", authMiddleware, subredditController.create.bind(subredditController))
+  .put("/subreddit/:id", authMiddleware, subredditController.update.bind(subredditController))
+  .delete("/subreddit/:id", authMiddleware, subredditController.delete.bind(subredditController))
+  .get("/subreddit", authMiddleware, subredditController.index.bind(subredditController))
+  .get("/subreddit/:id", authMiddleware, subredditController.view.bind(subredditController));
 
 export default router;

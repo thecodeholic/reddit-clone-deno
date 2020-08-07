@@ -29,8 +29,7 @@ export class SubredditController extends BaseController {
     try {
       let subreddit = await queryOne(`SELECT * FROM subreddits WHERE name = $1`, data.name);
       if (subreddit) {
-        ctx.response.status = 422;
-        ctx.response.body = {message: `Subreddit "${data.name}" already exists`};
+        return this.response(ctx, {message: `Subreddit "${data.name}" already exists`}, 422)
         return;
       }
       subreddit = await queryOne(
@@ -51,13 +50,10 @@ export class SubredditController extends BaseController {
       );
       
       console.log(subreddit);
-      ctx.response.status = 201;
-      ctx.response.body = subreddit;
-      return;
+      return this.response(ctx, subreddit, 201);
     } catch(e) {
       console.log(e);
-      ctx.response.status =500;
-      ctx.response.body = {message: "Internal server error"}
+      return this.response(ctx, {message: "Internal server error"}, 500);
     }
   }
 
@@ -69,14 +65,10 @@ export class SubredditController extends BaseController {
     try {
       let subreddit = await queryOne(`SELECT * FROM subreddits WHERE id = $1`, id);
       if (!subreddit) {
-        ctx.response.status = 404;
-        ctx.response.body = {message: `Subreddit does not exist`}
-        return;
+        return this.response(ctx, {message: `Subreddit does not exist`}, 404);
       }
       if (subreddit.user_id !== user.id) {
-        ctx.response.status = 403;
-        ctx.response.body = {message: `You don't have permission to access this resource`}
-        return;
+        return this.response(ctx, {message: `You don't have permission to access this resource`}, 403);
       }
       await queryOne("UPDATE subreddits SET title = $1, description = $2 WHERE id = $3", 
           data.title, data.description, id);
@@ -85,8 +77,7 @@ export class SubredditController extends BaseController {
       ctx.response.body = subreddit;
     } catch(e) {
       console.log(e);
-      ctx.response.status = 500;
-      ctx.response.body = {message: "Internal server error"}
+      return this.response(ctx, {message: "Internal server error"}, 500);
     }
   }
 
@@ -95,23 +86,18 @@ export class SubredditController extends BaseController {
     const user = ctx.state.user;
     let subreddit = await queryOne(`SELECT * FROM subreddits WHERE id = $1`, id);
     if (!subreddit) {
-      ctx.response.status = 404;
-      ctx.response.body = {message: `Subreddit does not exist`}
-      return;
+      return this.response(ctx, {message: `Subreddit does not exist`}, 404);
     }
     if (subreddit.user_id !== user.id) {
-      ctx.response.status = 403;
-      ctx.response.body = {message: `You don't have permission to access this resource`}
-      return;
+      return this.response(ctx, {message: `You don't have permission to access this resource`}, 403);
     }
 
     try {
       await queryOne(`DELETE FROM subreddits WHERE id = $1`, id)
-      ctx.response.status = 204;
+      return this.response(ctx, '', 204);
     } catch(e) {
       console.log(e);
-      ctx.response.status =500;
-      ctx.response.body = {message: "Internal server error"}
+      return this.response(ctx, {message: "Internal server error"}, 500)
     }
 
   }
