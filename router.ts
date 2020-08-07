@@ -2,6 +2,7 @@ import { Router, RouterContext } from "./deps.ts";
 import authController from "./controllers/AuthController.ts";
 import subredditController from "./controllers/SubredditController.ts";
 import { authMiddleware } from "./middlewares/authMiddleware.ts";
+import postController from "./controllers/PostController.ts";
 
 const router = new Router();
 
@@ -18,6 +19,9 @@ router
   .get("/subreddit", authMiddleware, subredditController.index.bind(subredditController))
   .get("/subreddit/:id", authMiddleware, subredditController.view.bind(subredditController))
   .post("/follow-subreddit/:id", authMiddleware, subredditController.followSubreddit.bind(subredditController))
+  
+  // Posts
+  .post('/post/:id', authMiddleware, postController.create.bind(postController))
   ;
 
 export default router;
