@@ -115,6 +115,8 @@ ALTER TABLE public.posts ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
 CREATE TABLE public.subreddits (
     id bigint NOT NULL,
     name character varying(255) NOT NULL,
+    title character varying(512) NOT NULL,
+    description text,
     user_id bigint NOT NULL,
     create_date timestamp without time zone
 );

@@ -16,6 +16,8 @@ router
   .put("/subreddit/:id", authMiddleware, subredditController.update.bind(subredditController))
   .delete("/subreddit/:id", authMiddleware, subredditController.delete.bind(subredditController))
   .get("/subreddit", authMiddleware, subredditController.index.bind(subredditController))
-  .get("/subreddit/:id", authMiddleware, subredditController.view.bind(subredditController));
+  .get("/subreddit/:id", authMiddleware, subredditController.view.bind(subredditController))
+  .post("/follow-subreddit/:id", authMiddleware, subredditController.followSubreddit.bind(subredditController))
+  ;
 
 export default router;

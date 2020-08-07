@@ -102,6 +102,26 @@ export class SubredditController extends BaseController {
 
   }
 
+  async followSubreddit(ctx: RouterContext) {
+    const id = ctx.params.id;
+    const user = ctx.state.user;
+
+    try {
+      let subreddit = await queryOne(`SELECT * FROM subreddits WHERE id = $1`, id);
+      if (!subreddit) {
+        return this.response(ctx, {message: `Subreddit does not exist`}, 404);
+      }
+
+      await queryOne(`INSERT INTO subreddits_users (user_id, subreddit_id, create_date)
+              VALUES ($1, $2, $3)`, user.id, id, new Date());
+      return this.response(ctx, '', 200)
+    } catch(e) {
+      console.log(e);
+      return this.response(ctx, {message: "Internal server error"}, 500)
+    }
+
+  }
+
   async view(ctx: RouterContext) {
 
   }
