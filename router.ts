@@ -22,6 +22,7 @@ router
   
   // Posts
   .post('/post/:id', authMiddleware, postController.create.bind(postController))
+  .put('/update-post/:id', authMiddleware, postController.update.bind(postController))
   ;
 
 export default router;
