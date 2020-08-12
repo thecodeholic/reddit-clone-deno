@@ -26,3 +26,6 @@ export {
 export {
   validateJwt,
 } from "https://deno.land/x/djwt@v1.2/validate.ts";
+export {
+  oakCors,
+} from "https://deno.land/x/cors@v1.1.0/mod.ts";

@@ -13,16 +13,40 @@ router.get("/", (ctx: RouterContext) => {
 router
   .post("/register", authController.register)
   .post("/login", authController.login)
-  .post("/subreddit", authMiddleware, subredditController.create.bind(subredditController))
-  .put("/subreddit/:id", authMiddleware, subredditController.update.bind(subredditController))
-  .delete("/subreddit/:id", authMiddleware, subredditController.delete.bind(subredditController))
-  .get("/subreddit", authMiddleware, subredditController.index.bind(subredditController))
-  .get("/subreddit/:id", authMiddleware, subredditController.view.bind(subredditController))
-  .post("/follow-subreddit/:id", authMiddleware, subredditController.followSubreddit.bind(subredditController))
-  
+  .post(
+    "/subreddit",
+    authMiddleware,
+    subredditController.create.bind(subredditController),
+  )
+  .put(
+    "/subreddit/:id",
+    authMiddleware,
+    subredditController.update.bind(subredditController),
+  )
+  .delete(
+    "/subreddit/:id",
+    authMiddleware,
+    subredditController.delete.bind(subredditController),
+  )
+  .get(
+    "/subreddit",
+    authMiddleware,
+    subredditController.index.bind(subredditController),
+  )
+  .get("/subreddit/:id", subredditController.view.bind(subredditController))
+  .post(
+    "/follow-subreddit/:id",
+    authMiddleware,
+    subredditController.followSubreddit.bind(subredditController),
+  )
   // Posts
-  .post('/post/:id', authMiddleware, postController.create.bind(postController))
-  .put('/update-post/:id', authMiddleware, postController.update.bind(postController))
-  ;
+  .get("/post", postController.getAll.bind(postController))
+  .post("/post/:id", authMiddleware, postController.create.bind(postController))
+  .put("/post/:id", authMiddleware, postController.update.bind(postController))
+  .delete(
+    "/post/:id",
+    authMiddleware,
+    postController.delete.bind(postController),
+  );
 
 export default router;
