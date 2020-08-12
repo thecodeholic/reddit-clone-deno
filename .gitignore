@@ -1,2 +1,4 @@
 database.sqlite
 config.ts
+.idea
+.vscode

@@ -13,14 +13,39 @@ class PostController extends BaseController {
           `SELECT p.* FROM posts p 
           LEFT JOIN subreddits s on s.id = p.subreddit_id
           LEFT JOIN subreddits_users su ON su.subreddit_id = s.id
+          LEFT JOIN users u ON u.id = p.user_id
           WHERE su.user_id = $1 
           ORDER BY  p.create_date DESC`,
           user.id,
         );
       } else {
-        posts = await queryArray(`SELECT p.* FROM posts p
+        posts = await queryArray(`
+        SELECT 
+          p.*, 
+          s.id as subreddit_id,
+          s.name as subreddit_name,
+          u.id as user_id, 
+          u.username 
+        FROM posts p
+        LEFT JOIN subreddits s ON s.id = p.subreddit_id
+        LEFT JOIN users u ON u.id = p.user_id
         ORDER BY p.upvotes`);
       }
+      posts = posts.map((p) => ({
+        id: +p.id,
+        title: p.title,
+        type: p.type,
+        link: p.link,
+        comments: 123,
+        user: {
+          id: p.user_id,
+          username: p.username,
+        },
+        subreddit: {
+          id: p.subreddit_id,
+          name: p.subreddit_name,
+        },
+      }));
       return this.response(ctx, posts);
     } catch (e) {
       console.log(e);
