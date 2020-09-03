@@ -8,35 +8,42 @@ class PostController extends BaseController {
 
     try {
       let posts = [];
+      let select = `
+      SELECT 
+        p.*,
+        s.id as subreddit_id,
+        s.name as subreddit_name,
+        u.id as user_id, 
+        u.username,
+        p.upvotes,
+        COUNT(c.id) as comments`;
+      let from = `
+      FROM posts p 
+        LEFT JOIN subreddits s on s.id = p.subreddit_id
+        LEFT JOIN users u ON u.id = p.user_id
+        LEFT JOIN comments c ON c.post_id = p.id`;
+      let where = "";
+      let groupBy = `GROUP BY p.id, s.id, u.id`;
+      let orderBy = `ORDER BY  p.create_date DESC`;
+
       if (user) {
+        from += `LEFT JOIN subreddits_users su ON su.subreddit_id = s.id`;
+        where += `WHERE su.user_id = $1`;
         posts = await queryArray(
-          `SELECT p.* FROM posts p 
-          LEFT JOIN subreddits s on s.id = p.subreddit_id
-          LEFT JOIN subreddits_users su ON su.subreddit_id = s.id
-          LEFT JOIN users u ON u.id = p.user_id
-          WHERE su.user_id = $1 
-          ORDER BY  p.create_date DESC`,
+          `${select} ${from} ${where} ${groupBy} ${orderBy}`,
           user.id,
         );
       } else {
-        posts = await queryArray(`
-        SELECT 
-          p.*, 
-          s.id as subreddit_id,
-          s.name as subreddit_name,
-          u.id as user_id, 
-          u.username 
-        FROM posts p
-        LEFT JOIN subreddits s ON s.id = p.subreddit_id
-        LEFT JOIN users u ON u.id = p.user_id
-        ORDER BY p.upvotes`);
+        posts = await queryArray(
+          `${select} ${from} ${where} ${groupBy} ${orderBy}`,
+        );
       }
       posts = posts.map((p) => ({
         id: +p.id,
         title: p.title,
         type: p.type,
         link: p.link,
-        comments: 123,
+        comments: p.comments,
         user: {
           id: p.user_id,
           username: p.username,
@@ -45,6 +52,8 @@ class PostController extends BaseController {
           id: p.subreddit_id,
           name: p.subreddit_name,
         },
+        create_date: p.create_date,
+        upvotes: p.upvotes,
       }));
       return this.response(ctx, posts);
     } catch (e) {

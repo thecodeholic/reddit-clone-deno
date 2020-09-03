@@ -15,12 +15,13 @@ export const userMiddleware = async (ctx: Context, next: Function) => {
       if (data.isValid) {
         const user = await queryOne(
           `SELECT * FROM users WHERE username = $1`,
-          data.payload.iss
+          data.payload.iss,
         );
         ctx.state.user = user;
       }
     }
   }
-  
+  console.log(ctx.state.user);
+
   await next();
 };
