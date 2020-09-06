@@ -148,7 +148,6 @@ CREATE TABLE public.subreddits_users (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
     subreddit_id bigint NOT NULL,
-    karma integer NOT NULL,
     create_date timestamp without time zone
 );
 
