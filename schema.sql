@@ -210,6 +210,7 @@ CREATE TABLE public.users (
     id bigint NOT NULL,
     username character varying(255) NOT NULL,
     email character varying(512) NOT NULL,
+    karma integer,
     password character varying(512) NOT NULL,
     create_date timestamp without time zone NOT NULL
 );
